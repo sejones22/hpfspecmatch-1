@@ -9,6 +9,7 @@ import pandas as pd
 import radvel
 from astroquery.simbad import Simbad
 import wget, zipfile, shutil
+import sys
 from . import config
 norm_mean     = lambda x: x/np.nanmean(x)
 
@@ -544,7 +545,7 @@ def get_library(overwrite=False):
         print('Downloading library from: {}'.format(config.URL_LIBRARY))
         wget.download(config.URL_LIBRARY, config.PATH_LIBRARY_ZIPNAME)
         
-        print('Extracting zip file')
+        print('\nExtracting zip file')
         with zipfile.ZipFile(config.PATH_LIBRARY_ZIPNAME, 'r') as zip_ref:
             zip_ref.extractall(config.PATH_LIBRARY)  
         print('Extracting zip file complete')
@@ -552,6 +553,14 @@ def get_library(overwrite=False):
         os.remove(config.PATH_LIBRARY_ZIPNAME)
         #shutil.rmtree('../library/__MACOSX')
         print('Download complete')
+        print('=============================================================================')
+        print('=============================================================================')
+        print('=============================================================================')
+        print('Exiting the program. Restart HPF-SpecMatch to correctly set up library paths.')
+        print('=============================================================================')
+        print('=============================================================================')
+        print('=============================================================================')
+        sys.exit()
         
     else:
         print('Library already exists. Skipping download')

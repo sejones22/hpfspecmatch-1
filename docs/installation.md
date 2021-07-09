@@ -11,10 +11,10 @@ cd hpfspecmatch
 python setup.py install
 ```
 
-## From pip
+## From pip (In Progress)
 `HPF-SpecMatch` can be installed from pip with the following command:
 ```
-pip install hpfspecmatch 
+pip install hpfspecmatch
 ```
 
 ## Dependencies
@@ -26,4 +26,3 @@ pip install hpfspecmatch
 - astroquery (pip install astroquery)
 - lmfit (pip install lmfit)
 - barycorrpy (pip install barycorrpy)
-
