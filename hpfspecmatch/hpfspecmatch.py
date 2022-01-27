@@ -1132,29 +1132,3 @@ def plot_crossval_feh_delta_feh(feh_true,d_feh,ax=None):
     ax.set_xlabel('[Fe/H]',labelpad=0)
     ax.set_ylabel('$\Delta$[Fe/H] = $\mathrm{[Fe/H]}_{\mathrm{Recovered}}$ - $\mathrm{[Fe/H]}_{\mathrm{True}}$')
     ax.minorticks_on()
-    
-def spectra_subtract(targetfile1,targetfile2,order,library_csv=config.PATH_LIBRARY_DB):
-    H1 = hpfspec.HPFSpectrum(targetfile1)
-    H2 = hpfspec.HPFSpectrum(targetfile2)
-
-    df = pd.read_csv(library_csv)
-
-    w = np.linspace(max(H1.w_shifted[order][0],H2.w_shifted[order][0])+2,min(H1.w_shifted[order][-1],H2.w_shifted[order][-1])-2,num=10000)
-    f_H1,e_H1 = H1.resample_order(w)
-    f_H2,e_H2 = H2.resample_order(w)
-
-    fig, (ax, bx) = plt.subplots(nrows=2,dpi=300,gridspec_kw={'height_ratios':[3,1]})
-    if sum(f_H1-f_H2 > 0) > sum(f_H2-f_H1 > 0):
-        ax.plot(w,f_H1,lw=0.5,c='crimson',label='{} [{}K] \nFe/H = {}'.format(H1.object, int(df.loc[df.OBJECT == H1.object,'Teff'].values[0]),df.loc[df.OBJECT == H1.object,'[Fe/H]'].values[0]))
-        ax.plot(w,f_H2,lw=0.5,label='{} [{}K] \nFe/H = {}'.format(H2.object, int(df.loc[df.OBJECT == H2.object,'Teff'].values[0]),df.loc[df.OBJECT == H2.object,'[Fe/H]'].values[0]))
-        bx.plot(w,f_H1-f_H2,lw=0.5,c='crimson',label='flux subtraction')
-
-    else:
-        ax.plot(w,f_H2,lw=0.5,c='crimson',label='{} [{}K] \nFe/H = {}'.format(H2.object, int(df.loc[df.OBJECT == H2.object,'Teff'].values[0]),df.loc[df.OBJECT == H2.object,'[Fe/H]'].values[0]))
-        ax.plot(w,f_H1,lw=0.5,label='{} [{}K] \nFe/H = {}'.format(H1.object, int(df.loc[df.OBJECT == H1.object,'Teff'].values[0]),df.loc[df.OBJECT == H1.object,'[Fe/H]'].values[0]))
-        bx.plot(w,f_H2-f_H1,lw=0.5,c='crimson',label='flux subtraction')
-
-    ax.set_ylabel('Flux')
-    bx.set_ylabel('Flux')
-    bx.set_xlabel('Wavelength [A]')
-    ax.legend(fontsize=7)
