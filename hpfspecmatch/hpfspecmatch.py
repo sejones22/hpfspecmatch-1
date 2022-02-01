@@ -784,7 +784,7 @@ def summarize_values_from_orders(files_pkl,targetname):
 
 def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_results', HLS=None, 
                              path_df_lib=config.PATH_LIBRARY_DB, orders = ['4','5','6','14','15','16','17'],
-                             maxvsini=30.,calibrate_feh=True,scaleres=1.):
+                             maxvsini=30.,calibrate_feh=True,scaleres=1.,skyscaling=1.0):
     """
     run hpfspecmatch for a given target file and orders
     
@@ -814,7 +814,7 @@ def run_specmatch_for_orders(targetfile, targetname, outputdirectory='specmatch_
     
     """
     # Target data
-    Htarget = hpfspec.HPFSpectrum(targetfile,targetname = targetname)
+    Htarget = hpfspec.HPFSpectrum(targetfile,targetname = targetname,sky_err_factor=skyscaling)
 
     print('Reading Library DataBase from: {}'.format(path_df_lib))
     df_lib = pd.read_csv(path_df_lib)
@@ -1133,7 +1133,7 @@ def plot_crossval_feh_delta_feh(feh_true,d_feh,ax=None):
     ax.set_ylabel('$\Delta$[Fe/H] = $\mathrm{[Fe/H]}_{\mathrm{Recovered}}$ - $\mathrm{[Fe/H]}_{\mathrm{True}}$')
     ax.minorticks_on()
     
-def spectra_subtract(targetfile1,targetfile2,order,library_csv=hpfspecmatch.config.PATH_LIBRARY_DB):
+def spectra_subtract(targetfile1,targetfile2,order,library_csv=config.PATH_LIBRARY_DB):
     H1 = hpfspec.HPFSpectrum(targetfile1)
     H2 = hpfspec.HPFSpectrum(targetfile2)
 
@@ -1147,14 +1147,14 @@ def spectra_subtract(targetfile1,targetfile2,order,library_csv=hpfspecmatch.conf
     if sum(f_H1-f_H2 > 0) > sum(f_H2-f_H1 > 0):
         ax.plot(w,f_H1,lw=0.5,c='crimson',label='{} [{}K] \nFe/H = {}'.format(H1.object, int(df.loc[df.OBJECT == H1.object,'Teff'].values[0]),df.loc[df.OBJECT == H1.object,'[Fe/H]'].values[0]))
         ax.plot(w,f_H2,lw=0.5,label='{} [{}K] \nFe/H = {}'.format(H2.object, int(df.loc[df.OBJECT == H2.object,'Teff'].values[0]),df.loc[df.OBJECT == H2.object,'[Fe/H]'].values[0]))
-        bx.plot(w,f_H1-f_H2,lw=0.5,c='crimson',label='flux subtraction')
+        bx.plot(w,f_H1-f_H2,lw=0.5,c='dimgrey',label='flux subtraction')
 
     else:
         ax.plot(w,f_H2,lw=0.5,c='crimson',label='{} [{}K] \nFe/H = {}'.format(H2.object, int(df.loc[df.OBJECT == H2.object,'Teff'].values[0]),df.loc[df.OBJECT == H2.object,'[Fe/H]'].values[0]))
         ax.plot(w,f_H1,lw=0.5,label='{} [{}K] \nFe/H = {}'.format(H1.object, int(df.loc[df.OBJECT == H1.object,'Teff'].values[0]),df.loc[df.OBJECT == H1.object,'[Fe/H]'].values[0]))
-        bx.plot(w,f_H2-f_H1,lw=0.5,c='crimson',label='flux subtraction')
+        bx.plot(w,f_H2-f_H1,lw=0.5,c='dimgrey',label='flux subtraction')
 
     ax.set_ylabel('Flux')
     bx.set_ylabel('Flux')
     bx.set_xlabel('Wavelength [A]')
-    ax.legend(fontsize=7)
+    ax.legend(fontsize=10)
